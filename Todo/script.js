@@ -11,7 +11,7 @@ function createMyElement(el, text, ...classes) {
 
 class Model {
   constructor() {
-    this.todoItems = [{ id: 1, text: 'First todo', status: true }, { id: 2, text: 'Second todo', status: false }];
+    this.todoItems = [];
   }
 
   deleteItem(id) {
@@ -19,10 +19,16 @@ class Model {
   }
 
   addItem(text) {
+    let id;
+    if (!this.todoItems.length) {
+      id = 1;
+    } else {
+      id = this.todoItems.at(-1).id + 1;
+    }
     this.todoItems.push({
-      id: this.todoItems.at(-1).id + 1 || 1,
+      id,
       text,
-      status: false,
+      status: true,
     });
   }
 
@@ -35,12 +41,9 @@ class Model {
         return item;
       }
     });
-    console.log(this.todoItems);
   }
-
   changeStatus(id) {
     this.todoItems.map(item => item.id === id ? item.status = !item.status : item);
-    console.log(this.todoItems);
   }
 }
 
@@ -53,7 +56,6 @@ class Controller {
 
   deleteItem(id) {
     this.model.deleteItem(id);
-    console.log(id);
     this.view.render(this.model.todoItems, this.editItem.bind(this), this.changeStatus.bind(this), this.addItem.bind(this), this.deleteItem.bind(this));
   }
 
@@ -77,7 +79,6 @@ class Controller {
     this.view.render(this.model.todoItems, this.editItem.bind(this), this.changeStatus.bind(this), this.addItem.bind(this), this.deleteItem.bind(this));
   }
 }
-
 
 class TodoItem {
   constructor(id, text, status) {
@@ -132,6 +133,7 @@ class TodoItem {
     });
   }
 }
+
 class TodoList {
   constructor() {
     this.root = document.querySelector('.todo');
